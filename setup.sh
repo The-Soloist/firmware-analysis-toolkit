@@ -5,18 +5,18 @@ sudo apt update
 sudo apt install -y python-pip python3-pip python3-pexpect unzip busybox-static fakeroot kpartx snmp uml-utilities util-linux vlan qemu-system-arm qemu-system-mips qemu-system-x86 qemu-utils
 
 echo "Installing binwalk"
-git clone --depth=1 https://github.com/devttys0/binwalk.git
+# git clone --depth=1 https://github.com/devttys0/binwalk.git
 cd binwalk
-sudo ./deps.sh --yes
+sudo ./deps.sh
 sudo python3 ./setup.py install
-sudo -H pip3 install git+https://github.com/ahupp/python-magic
-sudo -H pip install git+https://github.com/sviehb/jefferson
+sudo -H pip3 install python-magic
+sudo -H pip3 install git+https://github.com/sviehb/jefferson
 cd ..
 
 echo "Installing firmadyne"
-git clone --recursive https://github.com/firmadyne/firmadyne.git
+# git clone --recursive https://github.com/firmadyne/firmadyne.git
 cd firmadyne
-./download.sh
+# ./download.sh
 firmadyne_dir=$(realpath .)
 
 # Set FIRMWARE_DIR in firmadyne.config
@@ -37,9 +37,13 @@ chmod +x reset.py
 sed -i "/firmadyne_path=/c\firmadyne_path=$firmadyne_dir" fat.config
 
 cd qemu-builds
-wget -O qemu-system-static-2.5.0.zip "https://github.com/attify/firmware-analysis-toolkit/files/4244529/qemu-system-static-2.5.0.zip"
+# wget -O qemu-system-static-2.5.0.zip "https://github.com/attify/firmware-analysis-toolkit/files/4244529/qemu-system-static-2.5.0.zip"
 unzip -qq qemu-system-static-2.5.0.zip && rm qemu-system-static-2.5.0.zip
 cd ..
+
+# ln -s `pwd`/firmware-mod-kit ../firmware-mod-kit
+ln -s `pwd`/static-binary ./firmadyne/static-binary
+patch firmadyne/scripts/makeImage.sh diff/makeImage.diff
 
 echo "====================================================="
 echo "Firmware Analysis Toolkit installed successfully!"
